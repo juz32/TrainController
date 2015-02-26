@@ -83,7 +83,6 @@ public class TrainControllerGUI {
 	private JRadioButton radioButton_doors;
 	private JRadioButton radioButton_lights;
 	private JRadioButton radioButton_station;
-	private JLabel lblNoBraking;
 	
 	
 
@@ -113,8 +112,6 @@ public class TrainControllerGUI {
 		frame.setVisible(true);
 		beginPowerHandler();
 		beginAutoPilotHandler();
-		beginServiceBrakeHandler();
-		beginEmergencyBrakeHandler(); 
 		PowerThread pt = new PowerThread();
 		Thread t1 = new Thread(pt);
 		t1.start();
@@ -199,52 +196,6 @@ public class TrainControllerGUI {
             	setCommandedSpeedBox(tc.getCommandedSpeed());
 	        }
 	    });
-	}
-	private void beginServiceBrakeHandler(){
-		toggle_service.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        	if(toggle_service.isSelected()){
-        		if(toggle_emergency.isSelected()){
-        			toggle_emergency.setSelected(false);
-        			tc.stopEmergencyBraking();
-        		}
-        		slider.setEnabled(false);
-        		tc.startServiceBraking();
-        		lblNoBraking.setText("SERVICE BRAKE ENGAGED!");
-        	}
-        	else{
-        		setDesiredVelocitySlider(tc.getCurrentSpeed());
-        		slider.setEnabled(true);
-        		tc.stopServiceBraking();
-        		lblNoBraking.setText("");
-        	}
-        	
-        }
-    });
-	}
-	private void beginEmergencyBrakeHandler(){
-		toggle_emergency.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        	if(toggle_emergency.isSelected()){
-        		if(toggle_service.isSelected()) {
-        			toggle_service.setSelected(false);
-        			tc.stopServiceBraking();
-        		}
-        		slider.setEnabled(false);
-        		tc.startEmergencyBraking();
-        		lblNoBraking.setText("EMERGENCY BRAKE ENGAGED!");
-        	}
-        	else{
-        		setDesiredVelocitySlider(tc.getCurrentSpeed());
-        		slider.setEnabled(true);
-        		tc.stopEmergencyBraking();
-        		lblNoBraking.setText("");
-        	}
-        	
-        }
-    });
 	}
 	
 	private void beginAutoPilotHandler(){
@@ -435,7 +386,7 @@ public class TrainControllerGUI {
 		lblNextStation = new JLabel("NEXT STATION");
 		lblNextStation.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNextStation.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblNextStation.setBounds(536, 84, 219, 16);
+		lblNextStation.setBounds(536, 84, 185, 16);
 		panel.add(lblNextStation);
 		
 		toggle_service = new JToggleButton("SERVICE BRAKE");
@@ -549,12 +500,6 @@ public class TrainControllerGUI {
 		lblInManualMode.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
 		lblInManualMode.setBounds(455, 18, 162, 16);
 		panel.add(lblInManualMode);
-		
-		lblNoBraking = new JLabel("");
-		lblNoBraking.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNoBraking.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblNoBraking.setBounds(524, 317, 247, 16);
-		panel.add(lblNoBraking);
 		frame.getContentPane().setLayout(groupLayout);
 	}
 }
