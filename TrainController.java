@@ -6,6 +6,8 @@ private double commandedPower;
 
 private double speedLimit;
 private double authority; 
+private boolean isServiceBraking = false;
+private boolean isEmergencyBraking = false;
 
 private double KI;
 private double KP;
@@ -13,7 +15,7 @@ private double uk = 0;
 private double uk_prev = 0;
 private double ek = 0;
 private double ek_prev = 0;
-private double maxEnginePower = 120000; //in kiloWatts
+private double maxEnginePower = 120; //in kiloWatts
 private double trainSamplePeriod = .02;
 private double trainSampleRate = 1/trainSamplePeriod; // samples per second for .02 sample interval
 
@@ -30,8 +32,8 @@ private double trainSampleRate = 1/trainSamplePeriod; // samples per second for 
 		speedLimit = 50;
 		authority = 500;
 		
-		KI = .2;
-		KP = .7;
+		KI = .5;
+		KP = .8;
 	}
 	public double getCurrentSpeed(){
 		return currentSpeed;
@@ -52,8 +54,22 @@ private double trainSampleRate = 1/trainSamplePeriod; // samples per second for 
 		if(value < speedLimit) commandedSpeed = value;
 		else commandedSpeed = speedLimit;
 	}
+	public void startServiceBraking(){
+		isServiceBraking = true;
+	}
+	public void stopServiceBraking(){
+		isServiceBraking = false;
+	}
+	public void startEmergencyBraking(){
+		isEmergencyBraking = true;
+	}
+	public void stopEmergencyBraking(){
+		isEmergencyBraking = false;
+	}
+	
 	
 	public double calculatePower(){
+		if(isServiceBraking || isEmergencyBraking) return 0;
 		ek = commandedSpeed - currentSpeed;
 		uk = uk_prev + trainSamplePeriod/2 * (ek + ek_prev);
 		commandedPower = KI*(ek) + KP*(uk);
